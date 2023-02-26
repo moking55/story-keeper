@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mb-3">
     <MDBCard>
       <MDBCardHeader class="bg-success text-center text-light">
         <img class="mb-3" style="height: 150px" :src="trophy" />
@@ -52,7 +52,7 @@
         </p>
 
         <h4>สนับสนุนเส้นทางนักเขียนอาชีพ</h4>
-        <p class="mb-5">
+        <p class="m-0">
           เราขับเคลื่อนไปทีละก้าว
           เริ่มแรกเราแค่อยากให้ทุกคนได้เล่าได้เขียนได้อย่างไม่มีกำแพง
           ก้าวต่อไปเราจะสนับสนุนผู้ที่อยากเป็น “นักเขียน”
@@ -69,9 +69,12 @@
 import { MDBCard, MDBCardBody, MDBCardHeader } from "mdb-vue-ui-kit";
 import trophy from "@/assets/trophy.png";
 </script>
-<style>
+<style scoped>
 .card {
-  margin-top: 6em;
+  margin-top: -15.3em;
+}
+.card-header {
+  backdrop-filter: blur(5px);
 }
 .text-header {
   letter-spacing: 2.6px;

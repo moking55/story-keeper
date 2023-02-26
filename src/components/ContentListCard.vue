@@ -18,9 +18,13 @@
             >
           </div>
           <h3>เจอคุณครั้งแรก</h3>
-          <MDBCardText style="font-weight: 300; font-size: 11pt">
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This content is a little bit longer.
+          <MDBCardText class="article-preview">
+            "ผมเห็นคุณแล้ว กำลังกินเบียร์อยู่"
+            ไลน์ในโทรศัพท์ของฉันเด้งขึ้นมาแสดงข้อความ ข้อความหนึ่ง
+            มันทำให้ฉันรู้สึกอายนิดหน่อย การเจอกันครั้งแรกของเราสองคน
+            ควรจะน่าประทับใจกว่านี้ไหมนะ
+            "แล้วคุณจะมาหาเรามั้ย"เพราะมีปริมาณแอลกอฮอล์ในเลือดหรือป่าวนะ
+            ฉันถึงกล้าคิดกล้าทำมากขนาดนี้
           </MDBCardText>
           <div class="mt-auto">
             <MDBCardText>
@@ -56,5 +60,15 @@ const img_url = ref(
 img.side-card-img {
   height: 600px !important;
   object-fit: cover;
+}
+.article-preview {
+  font-weight: 300;
+  font-size: 11pt;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>

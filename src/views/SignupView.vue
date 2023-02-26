@@ -1,6 +1,6 @@
 <template>
   <img
-    src="https://c4.wallpaperflare.com/wallpaper/760/955/638/artwork-landscape-sky-mountains-wallpaper-preview.jpg"
+    :src="randomBackground"
     class="main-bg position-absolute w-100"
     style="height: 100vh"
   />
@@ -9,11 +9,11 @@
       class="my-auto overflow-hidden shadow"
       style="background: transparent"
     >
-      <MDBRow class="g-0">
-        <MDBCol md="4">
+      <MDBRow class="g-0 justify-content-center">
+        <MDBCol md="3" class="d-none d-md-block">
           <MDBCardImg
             fluid
-            src="https://i.pinimg.com/564x/5c/17/a2/5c17a21ef6aa85a5af61ddac46a5c732.jpg"
+            :src="randomBanners"
             class="w-100"
             style="height: 430px; object-fit: cover"
           />
@@ -24,8 +24,24 @@
           style="backdrop-filter: blur(5px); background: rgba(0, 0, 0, 0.5)"
         >
           <MDBCardBody class="position-relative p-5" style="z-index: 5">
-            <h3 class="login-title mb-5">สมัครสมาชิก</h3>
-            <div v-if="true">
+            <h3 class="login-title mb-5 mt-3">สมัครสมาชิก</h3>
+            <div v-if="isProgress">
+              <div class="d-flex h-100 justify-content-center">
+                <MDBSpinner grow color="light" />
+              </div>
+            </div>
+
+            <div class="my-auto" v-else>
+              <div class="alert alert-danger" role="alert" v-if="firebaseError">
+                {{ firebaseError }}
+              </div>
+              <MDBInput
+                class="mb-4"
+                label="ชื่อผู้ใข้งาน"
+                v-model="username"
+                white
+                type="text"
+              />
               <MDBInput
                 class="mb-4"
                 label="อีเมล์ของคุณ"
@@ -36,22 +52,19 @@
               <MDBInput
                 class="mb-3"
                 label="รหัสผ่าน"
-                v-model="email"
+                v-model="password"
                 white
                 type="password"
               />
 
-              <MDBBtn color="warning" size="sm">สมัครสมาชิก</MDBBtn>
+              <MDBBtn color="warning" size="sm" @click="signup"
+                >สมัครสมาชิก</MDBBtn
+              >
               <RouterLink
                 to="/signin"
                 class="text-light btn btn-sm transparent shadow-0"
                 >มีบัญชีแล้ว</RouterLink
               >
-            </div>
-            <div class="d-flex h-100 justify-content-center" v-else>
-              <div class="my-auto">
-                <MDBSpinner grow color="light" />
-              </div>
             </div>
           </MDBCardBody>
         </MDBCol>
@@ -71,7 +84,53 @@ import {
   MDBSpinner,
 } from "mdb-vue-ui-kit";
 
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
+import { ref } from "vue";
+import { useFirebaseAuth } from "vuefire";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+
+const auth = useFirebaseAuth();
+
+const randomBackground = randomObjectProperty(
+  import.meta.glob("@/assets/auth_bg/*.jpg")
+);
+const randomBanners = randomObjectProperty(
+  import.meta.glob("@/assets/auth_banners/*.jpg")
+);
+const [email, password, username] = [ref(), ref(), ref()];
+const isProgress = ref(false);
+const firebaseError = ref("");
+const router = useRouter();
+
+function randomObjectProperty(backgrounds) {
+  const backgroundKeys = Object.keys(backgrounds);
+  const randomIndex = Math.floor(Math.random() * backgroundKeys.length);
+  return backgroundKeys[randomIndex];
+}
+function signup() {
+  isProgress.value = true;
+  createUserWithEmailAndPassword(auth, email.value, password.value)
+    .then(async (userCredential) => {
+      // Signed in
+      const user = userCredential.user;
+      console.log(username.value);
+      await updateProfile(auth.currentUser, {
+        displayName: username.value,
+      });
+      console.log(user);
+      router.push("/signin");
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      isProgress.value = false;
+      firebaseError.value = errorMessage;
+
+      console.log(errorCode, errorMessage);
+      // ..
+    });
+}
 </script>
 <style scoped>
 .main-bg {

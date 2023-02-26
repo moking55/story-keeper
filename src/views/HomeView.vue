@@ -3,6 +3,9 @@ import { RouterLink } from "vue-router";
 
 import { MDBCard, MDBCardBody, MDBBtn } from "mdb-vue-ui-kit";
 import ContentListCard from "@/components/ContentListCard.vue";
+import { useUserCredentialsStore } from "@/stores/userCredentials";
+
+const useCredential = useUserCredentialsStore();
 </script>
 
 <template>
@@ -10,7 +13,7 @@ import ContentListCard from "@/components/ContentListCard.vue";
     <div class="container mt-n5">
       <section>
         <MDBCard>
-          <MDBCardBody v-if="!true">
+          <MDBCardBody v-if="useCredential.isLoggedIn()">
             <div class="row gx-5 gy-3">
               <div class="col-12 col-md-6">
                 <small class="mb-2 d-block"
@@ -43,11 +46,11 @@ import ContentListCard from "@/components/ContentListCard.vue";
                   class="d-flex justify-content-center"
                   style="font-weight: 500"
                 >
-                  <RouterLink class="px-4 auth-link" to="/"
+                  <RouterLink class="px-4 auth-link" to="/signin"
                     >เข้าสู่ระบบ</RouterLink
                   >
                   <div class="vr"></div>
-                  <RouterLink class="px-4 auth-link" to="/"
+                  <RouterLink class="px-4 auth-link" to="/signup"
                     >สมัครสมาชิก</RouterLink
                   >
                 </small>
@@ -57,7 +60,7 @@ import ContentListCard from "@/components/ContentListCard.vue";
         </MDBCard>
       </section>
     </div>
-    <div class="container mt-5 gy-3">
+    <div class="container mt-4 gy-3">
       <!-- <div class="text-center">
         <Vue3Lottie
           animationLink="https://assets3.lottiefiles.com/packages/lf20_1a8dx7zj.json"

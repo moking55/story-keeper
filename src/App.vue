@@ -8,10 +8,29 @@ import {
   MDBNavbarItem,
   MDBCollapse,
 } from "mdb-vue-ui-kit";
+
 import { ref } from "vue";
 import bgWallpaper from "@/assets/wallpaper.jpg";
+import { signOut } from "firebase/auth";
+import { useFirebaseAuth } from "vuefire";
+import router from "./router";
+import { useUserCredentialsStore } from "./stores/userCredentials";
 
+const useCredential = useUserCredentialsStore();
+const auth = useFirebaseAuth();
 const navCollapes = ref(false);
+
+function signOutButton() {
+  signOut(auth)
+    .then(() => {
+      useCredential.clearState();
+      alert("Sign-out successful");
+      router.push("/");
+    })
+    .catch(() => {
+      alert("An error happened during the sign-out process");
+    });
+}
 </script>
 
 <template>
@@ -53,7 +72,15 @@ const navCollapes = ref(false);
           </MDBNavbarNav>
 
           <MDBNavbarNav class="mb-2 mb-lg-0" right>
-            <MDBNavbarItem to="/">
+            <MDBNavbarItem
+              @click="signOutButton"
+              v-if="useCredential.isLoggedIn()"
+              active
+            >
+              <i class="fa fa-sign-out-alt me-2" aria-hidden="true"></i>
+              <span class="d-inline d-lg-none">ออกจากระบบ</span>
+            </MDBNavbarItem>
+            <MDBNavbarItem v-else to="/signin">
               <i class="fa fa-user-circle me-2" aria-hidden="true"></i>
               <span class="d-inline d-lg-none">เข้าสู่ระบบ / สมัครสมาชิก</span>
             </MDBNavbarItem>

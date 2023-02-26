@@ -1,3 +1,5 @@
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useFirebaseAuth } from "vuefire";
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
@@ -50,7 +52,7 @@ const router = createRouter({
       name: "philosophy",
       component: () => import("@/views/PhilosophyView.vue"),
       meta: {
-        activeBanner: false,
+        activeBanner: true,
       },
     },
 
@@ -64,5 +66,26 @@ const router = createRouter({
     },
   ],
 });
-
+const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const removeListener = onAuthStateChanged(
+      useFirebaseAuth(),
+      (user) => {
+        removeListener();
+        resolve(user);
+      },
+      reject
+    );
+  });
+};
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some((record) => record.meta.requireAuth)) {
+    if (await getCurrentUser()) {
+      next();
+    } else {
+      next("/signin");
+    }
+  }
+  next();
+});
 export default router;
