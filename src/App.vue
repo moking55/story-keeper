@@ -11,7 +11,7 @@ import {
 
 import { ref } from "vue";
 import bgWallpaper from "@/assets/wallpaper.jpg";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useFirebaseAuth } from "vuefire";
 import router from "./router";
 import { useUserCredentialsStore } from "./stores/userCredentials";
@@ -19,6 +19,17 @@ import { useUserCredentialsStore } from "./stores/userCredentials";
 const useCredential = useUserCredentialsStore();
 const auth = useFirebaseAuth();
 const navCollapes = ref(false);
+
+onAuthStateChanged(useFirebaseAuth(), (user) => {
+  if (user) {
+    useCredential.storeUserCredentials(
+      user.email,
+      user.uid,
+      user.displayName,
+      user.emailVerified
+    );
+  }
+});
 
 function signOutButton() {
   signOut(auth)

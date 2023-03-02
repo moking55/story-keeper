@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <MDBCard class="shadow" style="margin-top: 7em">
+    <MDBCard class="shadow" style="margin-top: 7em" v-if="data">
       <img
-        src="https://konachan.net/jpeg/d49abcbfe67086b00521286b300f52db/Konachan.com%20-%20353334%20animal%20azur_lane%20bird%20book%20braids%20breasts%20cleavage%20couch%20gray_eyes%20gray_hair%20long_hair%20nekojira%20open_shirt%20pantyhose%20shirt%20skirt%20transparent.jpg"
+        :src="data.coverUrl ? data.coverUrl : ContentCardbg"
         class="card-img-top"
-        alt=""
+        alt="cover image"
       />
       <MDBCardBody class="p-5">
         <div class="category-title mb-3">
@@ -12,12 +12,8 @@
             <i class="fas fa-book-open fa-sm me-2"></i>Short Story
           </p>
         </div>
-        <h2 class="story-title mb-3">หนีไปด้วยกันมั้ย</h2>
-        <MDBCardText class="story-content">
-          เคยอยากจะหนีไปที่ไหนไกลๆ หรือเปล่า ไปที่ไหนซักที่ ที่ไม่มีใครหาเจอ
-          ไปยังที่ที่ปัญหาต่างๆ ที่รายล้อมรอบตัวตามไปไม่ถึง
-          ลืมว่าตัวเองเคยเป็นใคร ปลดเปลื้องทุกภาระที่แบกเอาไว้
-          แล้วไปใช้ชีวิตในแบบที่ตนเองต้องการ ไม่มีอะไรให้ต้องกังวลวุ่นวายใจ
+        <h2 class="story-title mb-3">{{ data.storyTitle }}</h2>
+        <MDBCardText class="story-content" v-html="data.editorContent">
         </MDBCardText>
       </MDBCardBody>
     </MDBCard>
@@ -25,6 +21,21 @@
 </template>
 <script setup>
 import { MDBCard, MDBCardBody, MDBCardText } from "mdb-vue-ui-kit";
+import { computed, onBeforeMount, ref } from "vue";
+import { useDocument } from "vuefire";
+import { collection, doc, getFirestore } from "firebase/firestore";
+import { initializeApp } from "@firebase/app";
+import { useRoute } from "vue-router";
+import ContentCardbg from "@/assets/content_bg.png";
+
+const route = useRoute();
+const db = getFirestore(initializeApp);
+const storyId = route.params.storyId;
+const data = ref();
+onBeforeMount(async () => {
+  const processing = computed(() => doc(collection(db, "stories"), storyId));
+  data.value = useDocument(processing);
+});
 </script>
 <style scoped>
 .card-img-top {

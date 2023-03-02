@@ -1,4 +1,4 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { useFirebaseAuth } from "vuefire";
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
@@ -20,6 +20,15 @@ const router = createRouter({
       component: () => import("@/views/AboutView.vue"),
       meta: {
         activeBanner: true,
+      },
+    },
+    {
+      path: "/story/create",
+      name: "create-story",
+      component: () => import("@/views/writerZone/createStory.vue"),
+      meta: {
+        activeBanner: true,
+        requireAuth: false,
       },
     },
     {
