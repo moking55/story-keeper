@@ -33,8 +33,20 @@ const db = getFirestore(initializeApp);
 const storyId = route.params.storyId;
 const data = ref();
 onBeforeMount(async () => {
+  useDocument(doc(collection(db, "stories"), storyId))
+    .promise.value.then((story) => {
+      if (story) {
+        console.log(story);
+        data.value = story;
+      }
+    })
+    .catch((err) => {
+      throw new Error(err);
+    });
+
   const processing = computed(() => doc(collection(db, "stories"), storyId));
   data.value = useDocument(processing);
+  console.log(data.value);
 });
 </script>
 <style scoped>

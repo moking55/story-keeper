@@ -107,7 +107,18 @@ function signOutButton() {
     alt="Background Wallpaper"
   />
 
-  <RouterView />
+  <RouterView v-slot="{ Component }">
+    <template v-if="Component">
+      <Suspense>
+        <KeepAlive>
+          <component :is="Component"></component>
+        </KeepAlive>
+      </Suspense>
+    </template>
+    <template v-else>
+      <div>Loading...</div>
+    </template>
+  </RouterView>
 </template>
 
 <style scoped>
